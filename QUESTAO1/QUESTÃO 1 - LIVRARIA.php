@@ -1,5 +1,4 @@
 <?php
-// Conexão com o banco SQLite
 $db = new PDO('sqlite:livraria.db');
 $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
@@ -11,7 +10,6 @@ $db->exec("CREATE TABLE IF NOT EXISTS livros (
     ano_publicacao INTEGER NOT NULL
 )");
 
-// Processar adição de livro
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['titulo'])) {
     $titulo = $_POST['titulo'];
     $autor = $_POST['autor'];
@@ -21,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['titulo'])) {
     $stmt->execute([$titulo, $autor, $ano]);
 }
 
-// Processar exclusão de livro
 if (isset($_GET['delete_id'])) {
     $id = $_GET['delete_id'];
     $stmt = $db->prepare("DELETE FROM livros WHERE id = ?");
@@ -30,7 +27,6 @@ if (isset($_GET['delete_id'])) {
     exit;
 }
 
-// Obter todos os livros
 $livros = $db->query("SELECT * FROM livros ORDER BY titulo")->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -214,7 +210,6 @@ $livros = $db->query("SELECT * FROM livros ORDER BY titulo")->fetchAll(PDO::FETC
         <p>Livraria Trovão e Baleias © <?= date('Y') ?></p>
     </div>
 
-    <!-- Modal de Exclusão Personalizado -->
     <div id="modalExclusao" class="modal-exclusao">
         <div class="modal-exclusao-conteudo">
             <p>Confirme a exclusão do livro</p>
@@ -226,16 +221,13 @@ $livros = $db->query("SELECT * FROM livros ORDER BY titulo")->fetchAll(PDO::FETC
     </div>
 
     <script>
-        // Variável para armazenar o ID do livro a excluir
         let livroIdExclusao = null;
         
-        // Função para abrir o modal
         function abrirModalExclusao(id) {
             livroIdExclusao = id;
             document.getElementById('modalExclusao').style.display = 'block';
         }
         
-        // Configurar eventos dos botões
         document.getElementById('btnConfirmarExclusao').addEventListener('click', function() {
             if (livroIdExclusao) {
                 window.location.href = '?delete_id=' + livroIdExclusao;
@@ -246,7 +238,6 @@ $livros = $db->query("SELECT * FROM livros ORDER BY titulo")->fetchAll(PDO::FETC
             document.getElementById('modalExclusao').style.display = 'none';
         });
         
-        // Fechar modal ao clicar fora
         window.addEventListener('click', function(event) {
             if (event.target === document.getElementById('modalExclusao')) {
                 document.getElementById('modalExclusao').style.display = 'none';
